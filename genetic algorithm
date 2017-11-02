@@ -1,0 +1,89 @@
+var TARGET = "HI WASEEM HOW ARE YOU";
+var ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ ";
+var MUT_PROB = 100;
+
+var generateGenome = function () {
+    var genome = [];
+    for (var i = 0; i < TARGET.length; ++i) {
+        genome[i] = ALPHABET[Math.floor(Math.random() * ALPHABET.length)];
+    }
+    return genome.join("");
+};
+
+var genome = generateGenome();
+
+var getFitness = function (genome) {
+    var fitness = 0;
+    for (var i = 0; i < TARGET.length; i++) {
+        if (genome[i] == TARGET[i]) {
+            fitness++;
+        }
+    }
+    return fitness;
+};
+
+getFitness(genome);
+
+var getGenePool = function (genome) {
+    var genepool = [];
+    for(var i = 0; i<50;i++){
+        genepool[i]= genome;
+    }
+    return genepool
+};
+
+var pool = getGenePool(genome);
+
+var getFittest = function (pool) {
+    var fittestLoc = 0;
+    var fittest = 0;
+    for (var i = 0; i < pool.length; ++i) {
+        if (getFitness(pool[i]) > fittest) {
+            fittest = getFitness(pool[i]);
+            fittestLoc = i;
+        }
+    }
+    return pool[fittestLoc];
+};
+
+var doMutation = function (genome) {
+     var newGenome = "";
+     for (var i = 0; i < genome.length; ++i) {
+         if (Math.floor(Math.random() * MUT_PROB) === 1) {
+             if (genome[i] != TARGET[i]) {
+                 newGenome += ALPHABET[Math.floor(Math.random() * ALPHABET.length)];
+             } else {
+                 newGenome += genome[i];
+             }
+         } else {
+             newGenome += genome[i];
+         }
+     }
+     return newGenome;
+ };
+
+ var evolve = function () {
+     var numGens = 0;
+     var fittest = generateGenome();
+     console.log(fittest);
+    var generation = 0;
+     while (getFitness(fittest) !== TARGET.length) {
+         numGens++;
+         var pool = getGenePool(fittest);
+         var pool2 = [];
+         for (var i = 0; i < pool.length; ++i) {
+             pool2[i] = doMutation(pool[i], true);
+         }
+         fittest = getFittest(pool2);
+          if (numGens % 10 === 0) {
+              console.log("generation", generation, fittest);
+         }
+         generation++;
+     }
+
+     return "generation " +generation +" "+ fittest;
+ };
+
+ console.log(evolve());
+
+ 
